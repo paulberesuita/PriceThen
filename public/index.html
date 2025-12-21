@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WorthThen — What Your Money Was Really Worth</title>
+  <meta name="description" content="See how inflation has changed the value of money since 1950. Finally understand what prices and salaries from the past actually mean in today's dollars.">
+
+  <!-- Open Graph / Social -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://worththen.pages.dev">
+  <meta property="og:title" content="WorthThen — What Your Money Was Really Worth">
+  <meta property="og:description" content="See how inflation has changed the value of money since 1950. Finally understand what prices and salaries from the past actually mean in today's dollars.">
+  <meta property="og:image" content="https://worththen.pages.dev/api/og">
+  <meta property="og:image:type" content="image/png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="WorthThen — What Your Money Was Really Worth">
+  <meta name="twitter:description" content="See how inflation has changed the value of money since 1950.">
+  <meta name="twitter:image" content="https://worththen.pages.dev/api/og">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            background: '#f5f5f0',
+            text: '#171717',
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="stylesheet" href="/styles/main.css">
+  <script
+    async
+    crossorigin="anonymous"
+    data-clerk-publishable-key="pk_test_b3JpZW50ZWQtZmxlYS04Ny5jbGVyay5hY2NvdW50cy5kZXYk"
+    src="https://cdn.jsdelivr.net/npm/@clerk/clerk-js@latest/dist/clerk.browser.js"
+  ></script>
+</head>
+<body class="bg-background text-text min-h-screen">
+  <div class="max-w-4xl mx-auto px-4 py-12">
+    <!-- Header -->
+    <header class="flex justify-between items-center mb-12">
+      <div class="flex-1"></div>
+      <div class="text-center flex-1">
+        <h1 class="text-4xl font-bold mb-2">WorthThen</h1>
+        <p class="text-lg text-gray-600">What your money was really worth</p>
+      </div>
+      <div class="flex-1 flex justify-end">
+        <div id="user-button"></div>
+      </div>
+    </header>
+
+    <!-- Product Selector -->
+    <section class="mb-8">
+      <div id="product-selector" class="flex flex-wrap justify-center gap-3">
+        <!-- Products populated by JS -->
+      </div>
+    </section>
+
+    <!-- Chart Container -->
+    <section class="bg-white rounded-2xl shadow-sm p-6 mb-8">
+      <div id="chart-header" class="mb-4 flex justify-between items-start">
+        <div>
+          <h2 id="product-title" class="text-2xl font-semibold"></h2>
+          <p id="product-subtitle" class="text-gray-500">
+            <span id="subtitle-years"></span>
+            <span id="source-link"></span>
+          </p>
+        </div>
+        <button id="share-btn" class="text-gray-400 hover:text-gray-600 transition-colors p-2" title="Share this chart">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="18" cy="5" r="3"></circle>
+            <circle cx="6" cy="12" r="3"></circle>
+            <circle cx="18" cy="19" r="3"></circle>
+            <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+            <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Share Modal -->
+      <div id="share-modal" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+        <div class="bg-white rounded-2xl p-6 max-w-md w-full mx-4 shadow-xl">
+          <div class="flex justify-between items-center mb-4">
+            <h3 class="text-lg font-semibold">Share this chart</h3>
+            <button id="close-modal" class="text-gray-400 hover:text-gray-600">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+              </svg>
+            </button>
+          </div>
+
+          <div class="space-y-4">
+            <!-- Copy Link -->
+            <div>
+              <label class="text-sm text-gray-500 mb-1 block">Share link</label>
+              <div class="flex gap-2">
+                <input id="share-url" type="text" readonly class="flex-1 px-3 py-2 border border-gray-200 rounded-lg text-sm bg-gray-50">
+                <button id="copy-link-btn" class="px-4 py-2 bg-text text-white rounded-lg text-sm font-medium hover:opacity-90 transition-opacity">
+                  Copy
+                </button>
+              </div>
+            </div>
+
+            <!-- Copy Image -->
+            <div>
+              <label class="text-sm text-gray-500 mb-1 block">Or save as image</label>
+              <button id="copy-image-btn" class="w-full px-4 py-2 border border-gray-200 rounded-lg text-sm font-medium hover:bg-gray-50 transition-colors">
+                Download PNG
+              </button>
+            </div>
+          </div>
+
+          <p id="share-feedback" class="text-center text-sm text-green-600 mt-4 hidden">Copied to clipboard!</p>
+        </div>
+      </div>
+      <div id="chart-container" class="h-80">
+        <canvas id="price-chart"></canvas>
+      </div>
+    </section>
+
+    <!-- Value Comparison -->
+    <section id="comparison" class="bg-white rounded-2xl shadow-sm p-6 mb-8 hidden">
+      <div class="grid grid-cols-2 gap-6 text-center">
+        <div>
+          <p class="text-sm text-gray-500 mb-1">In <span id="start-year">1950</span></p>
+          <p id="start-price" class="text-3xl font-bold"></p>
+        </div>
+        <div>
+          <p class="text-sm text-gray-500 mb-1">In <span id="end-year">2024</span></p>
+          <p id="end-price" class="text-3xl font-bold"></p>
+        </div>
+      </div>
+      <p id="change-summary" class="text-center text-gray-600 mt-4"></p>
+    </section>
+
+    <!-- Premium Upsell -->
+    <section id="premium-cta" class="text-center py-8 hidden">
+      <p class="text-gray-600 mb-4">Unlock 10 more products including home prices, college tuition, and minimum wage</p>
+      <button id="upgrade-btn" class="bg-text text-white px-8 py-3 rounded-full font-medium hover:opacity-90 transition-opacity">
+        Upgrade for $3/month
+      </button>
+    </section>
+
+    <!-- Footer -->
+    <footer class="text-center text-sm text-gray-400 mt-12">
+      <p>Data sourced from Bureau of Labor Statistics CPI</p>
+    </footer>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script type="module" src="/js/app.js"></script>
+</body>
+</html>

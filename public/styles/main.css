@@ -1,0 +1,57 @@
+/* Product selector buttons */
+.product-btn {
+  padding: 0.5rem 1rem;
+  border-radius: 9999px;
+  background: white;
+  border: 1px solid #e5e5e5;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.product-btn:hover {
+  border-color: #171717;
+}
+
+.product-btn.active {
+  background: #171717;
+  color: white;
+  border-color: #171717;
+}
+
+.product-btn.locked {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.product-btn.locked::after {
+  content: '🔒';
+  margin-left: 0.25rem;
+  font-size: 0.75rem;
+}
+
+/* Chart animations */
+#chart-container {
+  opacity: 0;
+  animation: fadeIn 0.3s ease forwards;
+}
+
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+  }
+}
+
+/* Subtle pulse for loading */
+.loading {
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.6;
+  }
+}

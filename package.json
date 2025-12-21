@@ -1,0 +1,21 @@
+{
+  "name": "worththen",
+  "version": "1.0.0",
+  "description": "See how inflation has changed the value of money since 1950",
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler pages dev . --d1=DB",
+    "deploy": "wrangler pages deploy .",
+    "db:create": "wrangler d1 create worththen-db",
+    "db:migrate": "wrangler d1 execute worththen-db --file=./schema.sql"
+  },
+  "devDependencies": {
+    "@cloudflare/pages-plugin-vercel-og": "^0.1.2",
+    "wrangler": "^3.0.0"
+  },
+  "dependencies": {
+    "@resvg/resvg-wasm": "^2.6.2",
+    "satori": "^0.18.3",
+    "workers-og": "^0.0.27"
+  }
+}
