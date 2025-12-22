@@ -1,23 +1,33 @@
 // Historical price data based on BLS CPI and various sources
 // Prices adjusted to represent typical values for each year
 
+export const categories = [
+  { id: 'all', name: 'All', icon: '📊' },
+  { id: 'food', name: 'Food', icon: '🍽️' },
+  { id: 'housing', name: 'Housing', icon: '🏠' },
+  { id: 'transport', name: 'Transport', icon: '🚗' },
+  { id: 'wages', name: 'Wages', icon: '💵' },
+  { id: 'fun', name: 'Fun', icon: '🎉' },
+  { id: 'other', name: 'Other', icon: '📦' },
+];
+
 export const products = {
   free: [
-    { id: 'gas', name: 'Gallon of Gas', icon: '⛽', source: 'https://www.eia.gov/dnav/pet/hist/LeafHandler.ashx?n=pet&s=emm_epm0_pte_nus_dpg&f=a', sourceName: 'U.S. Energy Information Administration' },
-    { id: 'eggs', name: 'Dozen Eggs', icon: '🥚', source: 'https://www.bls.gov/regions/mid-atlantic/data/averageretailfoodandenergyprices_usandmidwest_table.htm', sourceName: 'Bureau of Labor Statistics' },
-    { id: 'movie', name: 'Movie Ticket', icon: '🎬', source: 'https://www.natoonline.org/data/ticket-price/', sourceName: 'National Association of Theatre Owners' },
+    { id: 'gas', name: 'Gallon of Gas', icon: '⛽', category: 'transport', source: 'https://www.eia.gov/dnav/pet/hist/LeafHandler.ashx?n=pet&s=emm_epm0_pte_nus_dpg&f=a', sourceName: 'U.S. Energy Information Administration' },
+    { id: 'eggs', name: 'Dozen Eggs', icon: '🥚', category: 'food', source: 'https://www.bls.gov/regions/mid-atlantic/data/averageretailfoodandenergyprices_usandmidwest_table.htm', sourceName: 'Bureau of Labor Statistics' },
+    { id: 'movie', name: 'Movie Ticket', icon: '🎬', category: 'fun', source: 'https://www.natoonline.org/data/ticket-price/', sourceName: 'National Association of Theatre Owners' },
   ],
   premium: [
-    { id: 'minimum_wage', name: 'Minimum Wage (hourly)', icon: '💵', source: 'https://www.dol.gov/agencies/whd/minimum-wage/history/chart', sourceName: 'U.S. Department of Labor' },
-    { id: 'rent', name: 'Average Rent', icon: '🏠', source: 'https://www.census.gov/housing/census/publications/who-can-afford.pdf', sourceName: 'U.S. Census Bureau' },
-    { id: 'home', name: 'Median Home Price', icon: '🏡', source: 'https://fred.stlouisfed.org/series/MSPUS', sourceName: 'Federal Reserve (FRED)' },
-    { id: 'tuition', name: 'College Tuition', icon: '🎓', source: 'https://nces.ed.gov/programs/digest/d22/tables/dt22_330.10.asp', sourceName: 'National Center for Education Statistics' },
-    { id: 'car', name: 'New Car (average)', icon: '🚗', source: 'https://www.bls.gov/opub/ted/2023/average-new-vehicle-prices-up-22-percent-from-2019-to-2022.htm', sourceName: 'Bureau of Labor Statistics' },
-    { id: 'milk', name: 'Gallon of Milk', icon: '🥛', source: 'https://www.bls.gov/regions/mid-atlantic/data/averageretailfoodandenergyprices_usandmidwest_table.htm', sourceName: 'Bureau of Labor Statistics' },
-    { id: 'bread', name: 'Loaf of Bread', icon: '🍞', source: 'https://www.bls.gov/regions/mid-atlantic/data/averageretailfoodandenergyprices_usandmidwest_table.htm', sourceName: 'Bureau of Labor Statistics' },
-    { id: 'stamp', name: 'Postage Stamp', icon: '📮', source: 'https://about.usps.com/who/profile/history/postage-702019.htm', sourceName: 'U.S. Postal Service' },
-    { id: 'coffee', name: 'Cup of Coffee', icon: '☕', source: 'https://www.bls.gov/cpi/', sourceName: 'Bureau of Labor Statistics CPI' },
-    { id: 'bigmac', name: 'Big Mac', icon: '🍔', source: 'https://www.economist.com/big-mac-index', sourceName: 'The Economist Big Mac Index' },
+    { id: 'minimum_wage', name: 'Minimum Wage (hourly)', icon: '💵', category: 'wages', source: 'https://www.dol.gov/agencies/whd/minimum-wage/history/chart', sourceName: 'U.S. Department of Labor' },
+    { id: 'rent', name: 'Average Rent', icon: '🏠', category: 'housing', source: 'https://www.census.gov/housing/census/publications/who-can-afford.pdf', sourceName: 'U.S. Census Bureau' },
+    { id: 'home', name: 'Median Home Price', icon: '🏡', category: 'housing', source: 'https://fred.stlouisfed.org/series/MSPUS', sourceName: 'Federal Reserve (FRED)' },
+    { id: 'tuition', name: 'College Tuition', icon: '🎓', category: 'other', source: 'https://nces.ed.gov/programs/digest/d22/tables/dt22_330.10.asp', sourceName: 'National Center for Education Statistics' },
+    { id: 'car', name: 'New Car (average)', icon: '🚗', category: 'transport', source: 'https://www.bls.gov/opub/ted/2023/average-new-vehicle-prices-up-22-percent-from-2019-to-2022.htm', sourceName: 'Bureau of Labor Statistics' },
+    { id: 'milk', name: 'Gallon of Milk', icon: '🥛', category: 'food', source: 'https://www.bls.gov/regions/mid-atlantic/data/averageretailfoodandenergyprices_usandmidwest_table.htm', sourceName: 'Bureau of Labor Statistics' },
+    { id: 'bread', name: 'Loaf of Bread', icon: '🍞', category: 'food', source: 'https://www.bls.gov/regions/mid-atlantic/data/averageretailfoodandenergyprices_usandmidwest_table.htm', sourceName: 'Bureau of Labor Statistics' },
+    { id: 'stamp', name: 'Postage Stamp', icon: '📮', category: 'other', source: 'https://about.usps.com/who/profile/history/postage-702019.htm', sourceName: 'U.S. Postal Service' },
+    { id: 'coffee', name: 'Cup of Coffee', icon: '☕', category: 'food', source: 'https://www.bls.gov/cpi/', sourceName: 'Bureau of Labor Statistics CPI' },
+    { id: 'bigmac', name: 'Big Mac', icon: '🍔', category: 'food', source: 'https://www.economist.com/big-mac-index', sourceName: 'The Economist Big Mac Index' },
   ]
 };
 

@@ -2,6 +2,7 @@
 
 const state = {
   selectedProduct: 'gas',
+  selectedCategory: 'all',
   isPremium: false,
   chart: null
 };
@@ -12,6 +13,14 @@ export function getState() {
 
 export function setSelectedProduct(productId) {
   state.selectedProduct = productId;
+}
+
+export function setSelectedCategory(categoryId) {
+  state.selectedCategory = categoryId;
+}
+
+export function getSelectedCategory() {
+  return state.selectedCategory;
 }
 
 export function setIsPremium(isPremium) {

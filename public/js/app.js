@@ -1,6 +1,6 @@
 // Main application entry point
-import { products } from './data.js';
-import { getState, setSelectedProduct, setIsPremium } from './state.js';
+import { products, categories } from './data.js';
+import { getState, setSelectedProduct, setIsPremium, setSelectedCategory, getSelectedCategory } from './state.js';
 import { renderChart } from './chart.js';
 
 let clerk = null;
@@ -12,6 +12,7 @@ async function init() {
   const productFromUrl = urlParams.get('product');
 
   // Render UI immediately (don't wait for Clerk)
+  renderCategoryTabs();
   renderProductSelector();
 
   // Use product from URL if valid, otherwise default to gas
@@ -102,19 +103,49 @@ async function checkPremiumStatus() {
   }
 }
 
+function renderCategoryTabs() {
+  const container = document.getElementById('category-tabs');
+  if (!container) return;
+
+  container.innerHTML = '';
+  const selectedCategory = getSelectedCategory();
+
+  categories.forEach(category => {
+    const btn = document.createElement('button');
+    btn.className = 'category-tab' + (category.id === selectedCategory ? ' active' : '');
+    btn.dataset.categoryId = category.id;
+    btn.textContent = category.name;
+    btn.addEventListener('click', () => selectCategory(category.id));
+    container.appendChild(btn);
+  });
+}
+
+function selectCategory(categoryId) {
+  setSelectedCategory(categoryId);
+  renderCategoryTabs();
+  renderProductSelector();
+}
+
 function renderProductSelector() {
   const container = document.getElementById('product-selector');
   container.innerHTML = '';
   const state = getState();
+  const selectedCategory = getSelectedCategory();
+
+  // Filter products by category
+  const filterByCategory = (product) => {
+    if (selectedCategory === 'all') return true;
+    return product.category === selectedCategory;
+  };
 
   // Render free products
-  products.free.forEach(product => {
+  products.free.filter(filterByCategory).forEach(product => {
     const btn = createProductButton(product, false);
     container.appendChild(btn);
   });
 
   // Render premium products (locked if not premium)
-  products.premium.forEach(product => {
+  products.premium.filter(filterByCategory).forEach(product => {
     const btn = createProductButton(product, !state.isPremium);
     container.appendChild(btn);
   });
