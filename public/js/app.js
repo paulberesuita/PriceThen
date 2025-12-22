@@ -264,14 +264,14 @@ function setupEventListeners() {
     // Draw subtitle
     ctx.fillStyle = '#6b7280';
     ctx.font = '14px system-ui, -apple-system, sans-serif';
-    ctx.fillText('worththen.pages.dev', padding, padding + 50);
+    ctx.fillText('pricethen.com', padding, padding + 50);
 
     // Draw chart
     ctx.drawImage(canvas, padding, padding + titleHeight);
 
     // Download
     const link = document.createElement('a');
-    link.download = `worththen-${state.selectedProduct}.png`;
+    link.download = `pricethen-${state.selectedProduct}.png`;
     link.href = exportCanvas.toDataURL('image/png');
     link.click();
 

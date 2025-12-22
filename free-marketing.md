@@ -1,4 +1,4 @@
-# Free Marketing Channels for WorthThen
+# Free Marketing Channels for PriceThen
 
 ## Startup/Product Directories
 - [ ] [Product Hunt](https://producthunt.com) - Biggest reach, schedule Tuesday-Thursday
@@ -34,9 +34,9 @@
 
 **Tagline:** See how inflation has changed money's value over time
 
-**Short Description:** WorthThen converts historical prices to today's dollars, helping you understand what money was really worth in the past.
+**Short Description:** PriceThen converts historical prices to today's dollars, helping you understand what money was really worth in the past.
 
-**Long Description:** Ever wonder what a $10,000 salary in 1970 would be worth today? WorthThen visualizes inflation data since 1950, showing how purchasing power has changed over decades. Compare prices across different years and finally understand what historical prices and salaries actually mean in today's dollars.
+**Long Description:** Ever wonder what a $10,000 salary in 1970 would be worth today? PriceThen visualizes inflation data since 1950, showing how purchasing power has changed over decades. Compare prices across different years and finally understand what historical prices and salaries actually mean in today's dollars.
 
 **Categories:** Finance, Tools, Data Visualization, Personal Finance
 

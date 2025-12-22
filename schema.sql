@@ -1,4 +1,4 @@
--- WorthThen Database Schema
+-- PriceThen Database Schema
 
 -- Users table for tracking subscribers
 CREATE TABLE IF NOT EXISTS users (

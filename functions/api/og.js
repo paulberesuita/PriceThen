@@ -121,7 +121,7 @@ export async function onRequestGet({ request }) {
           marginTop: '30px',
         }
       },
-        h('span', { style: { fontSize: '28px', fontWeight: 'bold', color: '#171717' } }, 'WorthThen'),
+        h('span', { style: { fontSize: '28px', fontWeight: 'bold', color: '#171717' } }, 'PriceThen'),
         h('span', { style: { fontSize: '18px', color: '#6b7280' } }, 'What your money was really worth')
       )
     )
