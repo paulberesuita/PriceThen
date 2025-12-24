@@ -12,58 +12,59 @@
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
+  <!-- Free products -->
   <url>
-    <loc>https://pricethen.com/?product=eggs</loc>
+    <loc>https://pricethen.com/egg-prices-history</loc>
     <lastmod>2025-12-23</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
+    <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://pricethen.com/?product=gas</loc>
+    <loc>https://pricethen.com/gas-prices-history</loc>
     <lastmod>2025-12-23</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
+    <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://pricethen.com/?product=rent</loc>
+    <loc>https://pricethen.com/rent-prices-history</loc>
     <lastmod>2025-12-23</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
+    <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://pricethen.com/?product=minimum_wage</loc>
+    <loc>https://pricethen.com/minimum-wage-history</loc>
     <lastmod>2025-12-23</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
+    <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://pricethen.com/?product=movie</loc>
+    <loc>https://pricethen.com/movie-ticket-prices-history</loc>
     <lastmod>2025-12-23</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
+    <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://pricethen.com/?product=tv</loc>
+    <loc>https://pricethen.com/tv-prices-history</loc>
     <lastmod>2025-12-23</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
+    <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://pricethen.com/?product=doctor</loc>
+    <loc>https://pricethen.com/doctor-visit-cost-history</loc>
     <lastmod>2025-12-23</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
+    <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://pricethen.com/?product=haircut</loc>
+    <loc>https://pricethen.com/haircut-prices-history</loc>
     <lastmod>2025-12-23</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
+    <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://pricethen.com/?product=tuition</loc>
+    <loc>https://pricethen.com/college-tuition-history</loc>
     <lastmod>2025-12-23</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
+    <priority>0.9</priority>
   </url>
 </urlset>

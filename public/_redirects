@@ -1,0 +1,9 @@
+# SEO-friendly product URLs - serve index.html for SPA routing
+/*-prices-history  /index.html  200
+/*-cost-history  /index.html  200
+/*-wage-history  /index.html  200
+/*-salary-history  /index.html  200
+/*-bill-history  /index.html  200
+/*-fare-history  /index.html  200
+/*-tuition-history  /index.html  200
+/*-income-history  /index.html  200

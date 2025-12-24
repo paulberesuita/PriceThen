@@ -1,16 +1,97 @@
 // Main application entry point
-import { products, categories } from './data.js?v=20251223h';
-import { getState, setSelectedProduct, setIsPremium, setSelectedCategory, getSelectedCategory } from './state.js?v=20251223h';
-import { renderChart } from './chart.js?v=20251223h';
-import { setClerkInstance } from './api.js?v=20251223h';
+import { products, categories } from './data.js?v=20251223i';
+import { getState, setSelectedProduct, setIsPremium, setSelectedCategory, getSelectedCategory } from './state.js?v=20251223i';
+import { renderChart } from './chart.js?v=20251223i';
+import { setClerkInstance } from './api.js?v=20251223i';
 
 let clerk = null;
 let clerkLoading = false;
 
+// SEO-friendly URL slugs for products
+const productSlugs = {
+  eggs: 'egg-prices-history',
+  rent: 'rent-prices-history',
+  gas: 'gas-prices-history',
+  minimum_wage: 'minimum-wage-history',
+  movie: 'movie-ticket-prices-history',
+  tv: 'tv-prices-history',
+  doctor: 'doctor-visit-cost-history',
+  haircut: 'haircut-prices-history',
+  tuition: 'college-tuition-history',
+  milk: 'milk-prices-history',
+  bread: 'bread-prices-history',
+  coffee: 'coffee-prices-history',
+  bigmac: 'big-mac-prices-history',
+  home: 'home-prices-history',
+  electricity: 'electricity-prices-history',
+  heating: 'heating-cost-history',
+  water: 'water-bill-history',
+  car: 'car-prices-history',
+  airline: 'airline-ticket-prices-history',
+  bus: 'bus-fare-history',
+  bicycle: 'bicycle-prices-history',
+  median_income: 'median-income-history',
+  teacher_salary: 'teacher-salary-history',
+  engineer_salary: 'engineer-salary-history',
+  nurse_salary: 'nurse-salary-history',
+  concert: 'concert-ticket-prices-history',
+  sports: 'sports-ticket-prices-history',
+  videogame: 'video-game-prices-history',
+  newspaper: 'newspaper-prices-history',
+  computer: 'computer-prices-history',
+  internet: 'internet-prices-history',
+  phone_service: 'phone-service-prices-history',
+  camera: 'camera-prices-history',
+  hospital: 'hospital-cost-history',
+  health_insurance: 'health-insurance-cost-history',
+  dental: 'dental-visit-cost-history',
+  prescription: 'prescription-drug-prices-history',
+  drycleaning: 'dry-cleaning-prices-history',
+  plumber: 'plumber-cost-history',
+  daycare: 'daycare-cost-history',
+  lawyer: 'lawyer-cost-history',
+  stamp: 'postage-stamp-prices-history',
+  wedding: 'wedding-cost-history',
+  funeral: 'funeral-cost-history',
+  textbook: 'textbook-prices-history'
+};
+
+// Reverse mapping: slug -> productId
+const slugToProduct = Object.fromEntries(
+  Object.entries(productSlugs).map(([id, slug]) => [slug, id])
+);
+
+function getProductIdFromUrl() {
+  const path = window.location.pathname;
+
+  // Check for SEO-friendly URL like /gas-prices-history
+  if (path !== '/' && path !== '/index.html') {
+    const slug = path.replace(/^\//, '').replace(/\/$/, '');
+    if (slugToProduct[slug]) {
+      return slugToProduct[slug];
+    }
+  }
+
+  // Fallback to query param for backwards compatibility
+  const urlParams = new URLSearchParams(window.location.search);
+  return urlParams.get('product');
+}
+
+function updateUrl(productId, replace = false) {
+  const slug = productSlugs[productId];
+  if (slug) {
+    const newUrl = `/${slug}`;
+    if (replace) {
+      history.replaceState({ productId }, '', newUrl);
+    } else {
+      history.pushState({ productId }, '', newUrl);
+    }
+  }
+}
+
 async function init() {
   // Check for product in URL
-  const urlParams = new URLSearchParams(window.location.search);
-  const productFromUrl = urlParams.get('product');
+  const productFromUrl = getProductIdFromUrl();
 
   // Render UI immediately (don't wait for Clerk)
   renderCategoryTabs();
@@ -22,14 +103,46 @@ async function init() {
   const selectedCategory = getSelectedCategory();
   const firstInCategory = allProducts.find(p => p.category === selectedCategory)?.id || 'eggs';
   const initialProduct = productFromUrl && allProductIds.includes(productFromUrl) ? productFromUrl : firstInCategory;
+
+  // Set the product's category as active
+  if (productFromUrl && allProductIds.includes(productFromUrl)) {
+    const product = allProducts.find(p => p.id === productFromUrl);
+    if (product) {
+      setSelectedCategory(product.category);
+      renderCategoryTabs();
+      renderProductSelector();
+    }
+  }
+
   setSelectedProduct(initialProduct);
   updateActiveButton(initialProduct);
-  renderChart(initialProduct);
+  await renderChart(initialProduct);
+
+  // Update URL to SEO-friendly format (replace, don't push)
+  updateUrl(initialProduct, true);
 
   setupEventListeners();
 
+  // Handle browser back/forward
+  window.addEventListener('popstate', handlePopState);
+
   // Load Clerk in background
   initClerk();
+}
+
+async function handlePopState(event) {
+  const productId = event.state?.productId || getProductIdFromUrl() || 'eggs';
+  const allProducts = [...products.free, ...products.premium];
+  const product = allProducts.find(p => p.id === productId);
+
+  if (product) {
+    setSelectedCategory(product.category);
+    renderCategoryTabs();
+    renderProductSelector();
+    setSelectedProduct(productId);
+    updateActiveButton(productId);
+    await renderChart(productId);
+  }
 }
 
 async function initClerk() {
@@ -221,6 +334,7 @@ function createProductButton(product, locked) {
 async function selectProduct(productId) {
   setSelectedProduct(productId);
   updateActiveButton(productId);
+  updateUrl(productId);
   await renderChart(productId);
 }
 
@@ -305,7 +419,8 @@ function setupEventListeners() {
 
   shareBtn.addEventListener('click', () => {
     const state = getState();
-    const url = `${window.location.origin}?product=${state.selectedProduct}`;
+    const slug = productSlugs[state.selectedProduct] || state.selectedProduct;
+    const url = `${window.location.origin}/${slug}`;
     shareUrl.value = url;
     shareModal.classList.remove('hidden');
   });
