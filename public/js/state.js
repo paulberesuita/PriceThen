@@ -1,8 +1,8 @@
 // Centralized state management
 
 const state = {
-  selectedProduct: 'gas',
-  selectedCategory: 'all',
+  selectedProduct: 'eggs',  // First product in 'food' category
+  selectedCategory: 'food',
   isPremium: false,
   chart: null
 };

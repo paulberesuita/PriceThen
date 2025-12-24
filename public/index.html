@@ -3,24 +3,86 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PriceThen — What Your Money Was Really Worth</title>
-  <meta name="description" content="See how inflation has changed the value of money since 1950. Finally understand what prices and salaries from the past actually mean in today's dollars.">
+  <title>PriceThen — Historical Prices & Inflation Calculator (1950-2025)</title>
+  <meta name="description" content="Compare historical prices from 1950 to 2025. See how much eggs, gas, rent, movie tickets, and more cost over 75 years. Free inflation calculator with BLS data.">
+  <meta name="keywords" content="inflation calculator, historical prices, cost of living, price history, CPI data, eggs price history, gas prices 1950, rent history, movie ticket prices, minimum wage history">
+  <link rel="canonical" href="https://pricethen.com/">
 
   <!-- Open Graph / Social -->
   <meta property="og:type" content="website">
-  <meta property="og:url" content="https://pricethen.com">
-  <meta property="og:title" content="PriceThen — What Your Money Was Really Worth">
-  <meta property="og:description" content="See how inflation has changed the value of money since 1950. Finally understand what prices and salaries from the past actually mean in today's dollars.">
+  <meta property="og:url" content="https://pricethen.com/">
+  <meta property="og:title" content="PriceThen — Historical Prices & Inflation Calculator">
+  <meta property="og:description" content="Compare historical prices from 1950 to 2025. See how much eggs, gas, rent, and more cost over 75 years.">
   <meta property="og:image" content="https://pricethen.com/api/og">
   <meta property="og:image:type" content="image/png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
+  <meta property="og:site_name" content="PriceThen">
 
   <!-- Twitter -->
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="PriceThen — What Your Money Was Really Worth">
-  <meta name="twitter:description" content="See how inflation has changed the value of money since 1950.">
+  <meta name="twitter:title" content="PriceThen — Historical Prices & Inflation Calculator">
+  <meta name="twitter:description" content="Compare historical prices from 1950 to 2025. See how much everyday items cost over 75 years.">
   <meta name="twitter:image" content="https://pricethen.com/api/og">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="/images/logo-character.png">
+  <link rel="apple-touch-icon" href="/images/logo-character.png">
+
+  <!-- Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "PriceThen",
+    "url": "https://pricethen.com",
+    "description": "Compare historical prices from 1950 to 2025. See how inflation has changed the cost of eggs, gas, rent, movie tickets, and more over 75 years.",
+    "applicationCategory": "FinanceApplication",
+    "operatingSystem": "Any",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    },
+    "author": {
+      "@type": "Organization",
+      "name": "PriceThen"
+    }
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "How much did a dozen eggs cost in 1950?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "A dozen eggs cost about $0.60 in 1950. Adjusted for inflation, that's equivalent to about $7.80 in 2025 dollars."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How much did gas cost in 1950?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "A gallon of gas cost about $0.18 in 1950. Adjusted for inflation, that's equivalent to about $2.34 in 2025 dollars."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What was the minimum wage in 1950?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "The federal minimum wage was $0.75 per hour in 1950. Adjusted for inflation, that's equivalent to about $9.75 in 2025 dollars."
+        }
+      }
+    ]
+  }
+  </script>
+
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
@@ -38,49 +100,65 @@
   <script
     async
     crossorigin="anonymous"
-    data-clerk-publishable-key="pk_test_b3JpZW50ZWQtZmxlYS04Ny5jbGVyay5hY2NvdW50cy5kZXYk"
+    data-clerk-publishable-key="pk_live_Y2xlcmsucHJpY2V0aGVuLmNvbSQ"
     src="https://cdn.jsdelivr.net/npm/@clerk/clerk-js@latest/dist/clerk.browser.js"
   ></script>
+  <!-- Privacy-friendly analytics by Plausible -->
+  <script async src="https://plausible.io/js/pa-jLjXZJ9MS905Jl1WPfWuy.js"></script>
+  <script>
+    window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)},plausible.init=plausible.init||function(i){plausible.o=i||{}};
+    plausible.init()
+  </script>
 </head>
 <body class="bg-background text-text min-h-screen">
-  <div class="max-w-4xl mx-auto px-4 py-12">
-    <!-- Header -->
-    <header class="flex justify-between items-center mb-12">
-      <div class="flex-1"></div>
-      <div class="text-center flex-1">
-        <h1 class="text-4xl font-bold mb-2">PriceThen</h1>
-        <p class="text-lg text-gray-600">What your money was really worth</p>
+  <div class="max-w-4xl mx-auto px-4 py-6 sm:py-12">
+    <!-- Navigation -->
+    <nav class="flex flex-col sm:flex-row items-center gap-3 sm:gap-0 mb-6 sm:mb-8">
+      <div class="hidden sm:block flex-1"></div>
+      <div class="flex gap-2">
+        <a href="/" class="px-3 sm:px-4 py-2 text-sm font-medium text-stone-800 bg-stone-200 rounded-full">Products</a>
+        <a href="/calculator" class="px-3 sm:px-4 py-2 text-sm font-medium text-stone-700 bg-stone-100 hover:bg-stone-200 rounded-full transition-colors">Calculator</a>
       </div>
-      <div class="flex-1 flex justify-end">
+      <div class="sm:flex-1 flex justify-center sm:justify-end items-center gap-2">
         <div id="user-button"></div>
+        <button id="sign-in-btn" class="hidden bg-text text-white px-4 py-2 rounded-full text-sm font-medium hover:opacity-90 transition-opacity">
+          Sign in
+        </button>
       </div>
+    </nav>
+
+    <!-- Header -->
+    <header class="text-center mb-8 sm:mb-12">
+      <img src="/images/logo-character.png" alt="PriceThen mascot" class="w-16 h-16 sm:w-20 sm:h-20 mx-auto mb-2">
+      <h1 class="text-3xl sm:text-4xl font-bold mb-2">PriceThen</h1>
+      <p class="text-base sm:text-lg text-stone-600">What your money was really worth</p>
     </header>
 
     <!-- Category Tabs -->
-    <section class="mb-4">
-      <div id="category-tabs" class="flex flex-wrap justify-center gap-2">
+    <section class="mb-3 sm:mb-4">
+      <div id="category-tabs" class="flex flex-wrap justify-center gap-1 sm:gap-2">
         <!-- Category tabs populated by JS -->
       </div>
     </section>
 
     <!-- Product Selector -->
-    <section class="mb-8">
-      <div id="product-selector" class="flex flex-wrap justify-center gap-3">
+    <section class="mb-6 sm:mb-8">
+      <div id="product-selector" class="flex flex-wrap justify-center gap-2 sm:gap-3">
         <!-- Products populated by JS -->
       </div>
     </section>
 
     <!-- Chart Container -->
-    <section class="bg-white rounded-2xl shadow-sm p-6 mb-8">
+    <section class="bg-white rounded-2xl shadow-sm p-4 sm:p-6 mb-6 sm:mb-8">
       <div id="chart-header" class="mb-4 flex justify-between items-start">
         <div>
-          <h2 id="product-title" class="text-2xl font-semibold"></h2>
-          <p id="product-subtitle" class="text-gray-500">
+          <h2 id="product-title" class="text-xl sm:text-2xl font-semibold"></h2>
+          <p id="product-subtitle" class="text-sm sm:text-base text-stone-500">
             <span id="subtitle-years"></span>
             <span id="source-link"></span>
           </p>
         </div>
-        <button id="share-btn" class="text-gray-400 hover:text-gray-600 transition-colors p-2" title="Share this chart">
+        <button id="share-btn" class="text-stone-400 hover:text-stone-600 transition-colors p-2" title="Share this chart">
           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <circle cx="18" cy="5" r="3"></circle>
             <circle cx="6" cy="12" r="3"></circle>
@@ -96,7 +174,7 @@
         <div class="bg-white rounded-2xl p-6 max-w-md w-full mx-4 shadow-xl">
           <div class="flex justify-between items-center mb-4">
             <h3 class="text-lg font-semibold">Share this chart</h3>
-            <button id="close-modal" class="text-gray-400 hover:text-gray-600">
+            <button id="close-modal" class="text-stone-400 hover:text-stone-600">
               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <line x1="18" y1="6" x2="6" y2="18"></line>
                 <line x1="6" y1="6" x2="18" y2="18"></line>
@@ -107,9 +185,9 @@
           <div class="space-y-4">
             <!-- Copy Link -->
             <div>
-              <label class="text-sm text-gray-500 mb-1 block">Share link</label>
+              <label class="text-sm text-stone-500 mb-1 block">Share link</label>
               <div class="flex gap-2">
-                <input id="share-url" type="text" readonly class="flex-1 px-3 py-2 border border-gray-200 rounded-lg text-sm bg-gray-50">
+                <input id="share-url" type="text" readonly class="flex-1 px-3 py-2 border border-stone-200 rounded-lg text-sm bg-stone-50">
                 <button id="copy-link-btn" class="px-4 py-2 bg-text text-white rounded-lg text-sm font-medium hover:opacity-90 transition-opacity">
                   Copy
                 </button>
@@ -118,8 +196,8 @@
 
             <!-- Copy Image -->
             <div>
-              <label class="text-sm text-gray-500 mb-1 block">Or save as image</label>
-              <button id="copy-image-btn" class="w-full px-4 py-2 border border-gray-200 rounded-lg text-sm font-medium hover:bg-gray-50 transition-colors">
+              <label class="text-sm text-stone-500 mb-1 block">Or save as image</label>
+              <button id="copy-image-btn" class="w-full px-4 py-2 border border-stone-200 rounded-lg text-sm font-medium hover:bg-stone-50 transition-colors">
                 Download PNG
               </button>
             </div>
@@ -128,41 +206,42 @@
           <p id="share-feedback" class="text-center text-sm text-green-600 mt-4 hidden">Copied to clipboard!</p>
         </div>
       </div>
-      <div id="chart-container" class="h-80">
+      <div id="chart-container" class="h-56 sm:h-80">
         <canvas id="price-chart"></canvas>
       </div>
     </section>
 
     <!-- Value Comparison -->
-    <section id="comparison" class="bg-white rounded-2xl shadow-sm p-6 mb-8 hidden">
-      <div class="grid grid-cols-2 gap-6 text-center">
+    <section id="comparison" class="bg-white rounded-2xl shadow-sm p-4 sm:p-6 mb-6 sm:mb-8 hidden">
+      <div class="grid grid-cols-2 gap-4 sm:gap-6 text-center">
         <div>
-          <p class="text-sm text-gray-500 mb-1">In <span id="start-year">1950</span></p>
-          <p id="start-price" class="text-3xl font-bold"></p>
+          <p class="text-xs sm:text-sm text-stone-500 mb-1">In <span id="start-year">1950</span></p>
+          <p id="start-price" class="text-2xl sm:text-3xl font-bold"></p>
         </div>
         <div>
-          <p class="text-sm text-gray-500 mb-1">In <span id="end-year">2024</span></p>
-          <p id="end-price" class="text-3xl font-bold"></p>
+          <p class="text-xs sm:text-sm text-stone-500 mb-1">In <span id="end-year">2025</span></p>
+          <p id="end-price" class="text-2xl sm:text-3xl font-bold"></p>
         </div>
       </div>
-      <p id="change-summary" class="text-center text-gray-600 mt-4"></p>
+      <p id="change-summary" class="text-center text-sm sm:text-base text-stone-600 mt-3 sm:mt-4"></p>
     </section>
 
     <!-- Premium Upsell -->
-    <section id="premium-cta" class="text-center py-8 hidden">
-      <p class="text-gray-600 mb-4">Unlock 10 more products including home prices, college tuition, and minimum wage</p>
-      <button id="upgrade-btn" class="bg-text text-white px-8 py-3 rounded-full font-medium hover:opacity-90 transition-opacity">
-        Upgrade for $3/month
+    <section id="premium-cta" class="text-center py-6 sm:py-8 hidden">
+      <p class="text-sm sm:text-base text-stone-600 mb-4 px-4">Unlock 10 more products including home prices, college tuition, and minimum wage</p>
+      <button id="upgrade-btn" class="bg-text text-white px-6 sm:px-8 py-2.5 sm:py-3 rounded-full text-sm sm:text-base font-medium hover:opacity-90 transition-opacity">
+        Unlock for $5
       </button>
     </section>
 
     <!-- Footer -->
-    <footer class="text-center text-sm text-gray-400 mt-12">
+    <footer class="text-center text-xs sm:text-sm text-stone-400 mt-8 sm:mt-12">
       <p>Data sourced from Bureau of Labor Statistics CPI</p>
+      <p class="mt-1">2025 data estimated from Jan-Nov averages</p>
     </footer>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script type="module" src="/js/app.js"></script>
+  <script type="module" src="/js/app.js?v=20251223h"></script>
 </body>
 </html>

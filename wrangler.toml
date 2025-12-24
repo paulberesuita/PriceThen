@@ -2,3 +2,8 @@ name = "pricethen"
 compatibility_date = "2024-11-06"
 compatibility_flags = ["nodejs_compat_v2"]
 pages_build_output_dir = "./public"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "pricethen-db"
+database_id = "bcd6b1eb-7457-4f70-8f27-be1d564497f3"

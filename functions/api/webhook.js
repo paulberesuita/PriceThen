@@ -1,5 +1,5 @@
 // Stripe Webhook handler
-// Updates Clerk user metadata when subscription is created/updated
+// Updates Clerk user metadata for payments, refunds, and disputes
 
 export async function onRequestPost(context) {
   const { request, env } = context;
@@ -15,19 +15,31 @@ export async function onRequestPost(context) {
 
   const event = JSON.parse(body);
 
-  // Handle subscription events
+  // Handle successful one-time payment
   if (event.type === 'checkout.session.completed') {
     const session = event.data.object;
     const userId = session.metadata?.userId;
 
-    if (userId && session.subscription) {
+    if (userId) {
       await updateClerkUserPremium(userId, true, env);
     }
   }
 
-  if (event.type === 'customer.subscription.deleted') {
-    const subscription = event.data.object;
-    const userId = subscription.metadata?.userId;
+  // Handle refund - revoke premium access
+  if (event.type === 'charge.refunded') {
+    const charge = event.data.object;
+    // Get the checkout session to find the userId
+    const userId = await getUserIdFromCharge(charge, env);
+
+    if (userId) {
+      await updateClerkUserPremium(userId, false, env);
+    }
+  }
+
+  // Handle dispute/chargeback - revoke premium access
+  if (event.type === 'charge.dispute.created') {
+    const dispute = event.data.object;
+    const userId = await getUserIdFromCharge({ id: dispute.charge }, env);
 
     if (userId) {
       await updateClerkUserPremium(userId, false, env);
@@ -35,6 +47,38 @@ export async function onRequestPost(context) {
   }
 
   return new Response('OK', { status: 200 });
+}
+
+async function getUserIdFromCharge(charge, env) {
+  try {
+    // Get the payment intent from the charge
+    const chargeResponse = await fetch(`https://api.stripe.com/v1/charges/${charge.id}`, {
+      headers: {
+        'Authorization': `Bearer ${env.STRIPE_SECRET_KEY}`
+      }
+    });
+    const chargeData = await chargeResponse.json();
+
+    if (chargeData.payment_intent) {
+      // Get the checkout session from the payment intent
+      const sessionsResponse = await fetch(
+        `https://api.stripe.com/v1/checkout/sessions?payment_intent=${chargeData.payment_intent}`,
+        {
+          headers: {
+            'Authorization': `Bearer ${env.STRIPE_SECRET_KEY}`
+          }
+        }
+      );
+      const sessions = await sessionsResponse.json();
+
+      if (sessions.data?.[0]?.metadata?.userId) {
+        return sessions.data[0].metadata.userId;
+      }
+    }
+  } catch (error) {
+    console.error('Error getting userId from charge:', error);
+  }
+  return null;
 }
 
 async function verifyStripeSignature(payload, signature, secret) {

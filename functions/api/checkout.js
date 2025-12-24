@@ -1,5 +1,5 @@
 // Stripe Checkout API route
-// Creates a checkout session for premium subscription
+// Creates a checkout session for premium one-time purchase
 
 export async function onRequestPost(context) {
   const { request, env } = context;
@@ -14,7 +14,7 @@ export async function onRequestPost(context) {
       });
     }
 
-    // Create Stripe checkout session
+    // Create Stripe checkout session for one-time payment
     const response = await fetch('https://api.stripe.com/v1/checkout/sessions', {
       method: 'POST',
       headers: {
@@ -22,14 +22,13 @@ export async function onRequestPost(context) {
         'Content-Type': 'application/x-www-form-urlencoded'
       },
       body: new URLSearchParams({
-        'mode': 'subscription',
+        'mode': 'payment',
         'payment_method_types[]': 'card',
         'line_items[0][price]': env.STRIPE_PRICE_ID,
         'line_items[0][quantity]': '1',
         'success_url': `${new URL(request.url).origin}?success=true`,
         'cancel_url': `${new URL(request.url).origin}?canceled=true`,
-        'metadata[userId]': userId,
-        'subscription_data[metadata][userId]': userId
+        'metadata[userId]': userId
       })
     });
 

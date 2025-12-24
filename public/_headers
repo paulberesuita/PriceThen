@@ -1,0 +1,20 @@
+# Prevent caching of HTML pages so updates show immediately
+/*.html
+  Cache-Control: no-cache, no-store, must-revalidate
+
+/
+  Cache-Control: no-cache, no-store, must-revalidate
+
+/calculator
+  Cache-Control: no-cache, no-store, must-revalidate
+
+# Prevent caching of JS files during development
+/js/*
+  Cache-Control: no-cache, no-store, must-revalidate
+
+# Allow caching of styles and images
+/styles/*
+  Cache-Control: public, max-age=3600
+
+/images/*
+  Cache-Control: public, max-age=86400

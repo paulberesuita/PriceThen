@@ -1,7 +1,8 @@
 // Main application entry point
-import { products, categories } from './data.js';
-import { getState, setSelectedProduct, setIsPremium, setSelectedCategory, getSelectedCategory } from './state.js';
-import { renderChart } from './chart.js';
+import { products, categories } from './data.js?v=20251223h';
+import { getState, setSelectedProduct, setIsPremium, setSelectedCategory, getSelectedCategory } from './state.js?v=20251223h';
+import { renderChart } from './chart.js?v=20251223h';
+import { setClerkInstance } from './api.js?v=20251223h';
 
 let clerk = null;
 let clerkLoading = false;
@@ -15,9 +16,12 @@ async function init() {
   renderCategoryTabs();
   renderProductSelector();
 
-  // Use product from URL if valid, otherwise default to gas
-  const allProductIds = [...products.free, ...products.premium].map(p => p.id);
-  const initialProduct = productFromUrl && allProductIds.includes(productFromUrl) ? productFromUrl : 'gas';
+  // Use product from URL if valid, otherwise default to first product in current category
+  const allProducts = [...products.free, ...products.premium];
+  const allProductIds = allProducts.map(p => p.id);
+  const selectedCategory = getSelectedCategory();
+  const firstInCategory = allProducts.find(p => p.category === selectedCategory)?.id || 'eggs';
+  const initialProduct = productFromUrl && allProductIds.includes(productFromUrl) ? productFromUrl : firstInCategory;
   setSelectedProduct(initialProduct);
   updateActiveButton(initialProduct);
   renderChart(initialProduct);
@@ -35,8 +39,11 @@ async function initClerk() {
   try {
     await waitForClerk();
 
-    // Mount Clerk UI
-    clerk.mountUserButton(document.getElementById('user-button'));
+    // Pass Clerk instance to API module for auth
+    setClerkInstance(clerk);
+
+    // Update UI based on auth state
+    updateAuthUI();
 
     // Check premium status and re-render if needed
     await checkPremiumStatus();
@@ -44,12 +51,31 @@ async function initClerk() {
 
     // Listen for Clerk user changes (sign in/out)
     clerk.addListener(async ({ user }) => {
+      setClerkInstance(clerk);
+      updateAuthUI();
       await checkPremiumStatus();
       renderProductSelector();
     });
   } catch (error) {
     console.error('Clerk initialization error:', error);
     clerkLoading = false;
+    // Show sign-in button even if Clerk fails
+    document.getElementById('sign-in-btn').classList.remove('hidden');
+  }
+}
+
+function updateAuthUI() {
+  const signInBtn = document.getElementById('sign-in-btn');
+  const userButton = document.getElementById('user-button');
+
+  if (clerk.user) {
+    // User is signed in - show user button, hide sign in
+    signInBtn.classList.add('hidden');
+    clerk.mountUserButton(userButton);
+  } else {
+    // User is signed out - show sign in button
+    signInBtn.classList.remove('hidden');
+    userButton.innerHTML = '';
   }
 }
 
@@ -96,8 +122,16 @@ async function checkPremiumStatus() {
 
   const user = clerk.user;
   if (user) {
+    // Force reload user to get latest metadata
+    await user.reload();
     const isPremium = user.publicMetadata?.isPremium === true;
     setIsPremium(isPremium);
+
+    // Hide upgrade CTA if premium
+    const cta = document.getElementById('premium-cta');
+    if (isPremium && cta) {
+      cta.classList.add('hidden');
+    }
   } else {
     setIsPremium(false);
   }
@@ -120,10 +154,26 @@ function renderCategoryTabs() {
   });
 }
 
-function selectCategory(categoryId) {
+async function selectCategory(categoryId) {
   setSelectedCategory(categoryId);
   renderCategoryTabs();
   renderProductSelector();
+
+  // Auto-select first product in this category
+  const state = getState();
+  const categoryProducts = [
+    ...products.free.filter(p => p.category === categoryId),
+    ...products.premium.filter(p => p.category === categoryId)
+  ];
+
+  if (categoryProducts.length > 0) {
+    const firstProduct = categoryProducts[0];
+    const isLocked = products.premium.some(p => p.id === firstProduct.id) && !state.isPremium;
+
+    if (!isLocked) {
+      await selectProduct(firstProduct.id);
+    }
+  }
 }
 
 function renderProductSelector() {
@@ -134,8 +184,7 @@ function renderProductSelector() {
 
   // Filter products by category
   const filterByCategory = (product) => {
-    if (selectedCategory === 'all') return true;
-    return product.category === selectedCategory;
+return product.category === selectedCategory;
   };
 
   // Render free products
@@ -169,10 +218,10 @@ function createProductButton(product, locked) {
   return btn;
 }
 
-function selectProduct(productId) {
+async function selectProduct(productId) {
   setSelectedProduct(productId);
   updateActiveButton(productId);
-  renderChart(productId);
+  await renderChart(productId);
 }
 
 function updateActiveButton(productId) {
@@ -185,6 +234,22 @@ function showPremiumCTA() {
   const cta = document.getElementById('premium-cta');
   cta.classList.remove('hidden');
   cta.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+async function handleSignIn() {
+  if (!clerk) {
+    try {
+      await waitForClerk();
+    } catch (error) {
+      console.error('Could not load Clerk:', error);
+      return;
+    }
+  }
+
+  clerk.openSignIn({
+    afterSignInUrl: window.location.href,
+    afterSignUpUrl: window.location.href
+  });
 }
 
 async function handleUpgrade() {
@@ -227,6 +292,7 @@ async function handleUpgrade() {
 
 function setupEventListeners() {
   document.getElementById('upgrade-btn').addEventListener('click', handleUpgrade);
+  document.getElementById('sign-in-btn').addEventListener('click', handleSignIn);
 
   // Share functionality
   const shareBtn = document.getElementById('share-btn');
@@ -290,7 +356,7 @@ function setupEventListeners() {
     // Draw title
     ctx.fillStyle = '#171717';
     ctx.font = 'bold 24px system-ui, -apple-system, sans-serif';
-    ctx.fillText(`${product.icon} ${product.name} (1950-2024)`, padding, padding + 30);
+    ctx.fillText(`${product.icon} ${product.name} (1950-2025)`, padding, padding + 30);
 
     // Draw subtitle
     ctx.fillStyle = '#6b7280';

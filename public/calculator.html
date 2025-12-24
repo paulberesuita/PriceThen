@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Inflation Calculator - What Would $100 in 1970 Be Worth Today? | PriceThen</title>
+  <meta name="description" content="Free inflation calculator using BLS CPI data from 1950-2025. Calculate how much money from any year would be worth today and see how purchasing power has changed.">
+  <meta name="keywords" content="inflation calculator, CPI calculator, purchasing power calculator, dollar value calculator, what was $100 worth, money value over time">
+  <link rel="canonical" href="https://pricethen.com/calculator">
+
+  <!-- Open Graph / Social -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://pricethen.com/calculator">
+  <meta property="og:title" content="Inflation Calculator - What Would Your Money Be Worth Today?">
+  <meta property="og:description" content="Free inflation calculator using BLS CPI data. Calculate how much money from 1950-2025 would be worth today.">
+  <meta property="og:image" content="https://pricethen.com/api/og">
+  <meta property="og:site_name" content="PriceThen">
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Inflation Calculator | PriceThen">
+  <meta name="twitter:description" content="Calculate how inflation has affected your money's value since 1950.">
+  <meta name="twitter:image" content="https://pricethen.com/api/og">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="/images/logo-character.png">
+  <link rel="apple-touch-icon" href="/images/logo-character.png">
+
+  <!-- Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "PriceThen Inflation Calculator",
+    "url": "https://pricethen.com/calculator",
+    "description": "Calculate how much money from any year between 1950-2025 would be worth today using official BLS CPI data.",
+    "applicationCategory": "FinanceApplication",
+    "operatingSystem": "Any",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    }
+  }
+  </script>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            background: '#f5f5f0',
+            text: '#171717',
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="stylesheet" href="/styles/main.css">
+  <script
+    async
+    crossorigin="anonymous"
+    data-clerk-publishable-key="pk_live_Y2xlcmsucHJpY2V0aGVuLmNvbSQ"
+    src="https://cdn.jsdelivr.net/npm/@clerk/clerk-js@latest/dist/clerk.browser.js"
+  ></script>
+  <!-- Privacy-friendly analytics by Plausible -->
+  <script async src="https://plausible.io/js/pa-jLjXZJ9MS905Jl1WPfWuy.js"></script>
+  <script>
+    window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)},plausible.init=plausible.init||function(i){plausible.o=i||{}};
+    plausible.init()
+  </script>
+</head>
+<body class="bg-background text-text min-h-screen">
+  <div class="max-w-2xl mx-auto px-4 py-6 sm:py-12">
+    <!-- Navigation -->
+    <nav class="flex flex-col sm:flex-row items-center gap-3 sm:gap-0 mb-6 sm:mb-8">
+      <div class="hidden sm:block flex-1"></div>
+      <div class="flex gap-2">
+        <a href="/" class="px-3 sm:px-4 py-2 text-sm font-medium text-stone-700 bg-stone-100 hover:bg-stone-200 rounded-full transition-colors">Products</a>
+        <a href="/calculator" class="px-3 sm:px-4 py-2 text-sm font-medium text-stone-800 bg-stone-200 rounded-full">Calculator</a>
+      </div>
+      <div class="sm:flex-1 flex justify-center sm:justify-end items-center gap-2">
+        <div id="user-button"></div>
+        <button id="sign-in-btn" class="hidden bg-text text-white px-4 py-2 rounded-full text-sm font-medium hover:opacity-90 transition-opacity">
+          Sign in
+        </button>
+      </div>
+    </nav>
+
+    <!-- Header -->
+    <header class="text-center mb-8 sm:mb-12">
+      <a href="/" class="inline-block">
+        <img src="/images/logo-character.png" alt="PriceThen mascot" class="w-12 h-12 sm:w-16 sm:h-16 mx-auto mb-2">
+      </a>
+      <h1 class="text-2xl sm:text-3xl font-bold mb-2">Inflation Calculator</h1>
+      <p class="text-sm sm:text-base text-stone-600">See what your money was really worth</p>
+    </header>
+
+    <!-- Calculator -->
+    <section class="bg-white rounded-2xl shadow-sm p-4 sm:p-8 mb-6 sm:mb-8">
+      <div class="space-y-6">
+        <!-- Amount Input -->
+        <div>
+          <label for="amount" class="block text-sm font-medium text-stone-700 mb-2">Amount</label>
+          <div class="relative">
+            <span class="absolute left-4 top-1/2 -translate-y-1/2 text-stone-500 text-xl">$</span>
+            <input
+              type="number"
+              id="amount"
+              value="100"
+              min="0.01"
+              step="0.01"
+              class="w-full pl-10 pr-4 py-4 text-2xl border border-stone-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-stone-900 focus:border-transparent"
+            >
+          </div>
+        </div>
+
+        <!-- Year Selectors -->
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label for="from-year" class="block text-sm font-medium text-stone-700 mb-2">From Year</label>
+            <select
+              id="from-year"
+              class="w-full px-4 py-3 text-lg border border-stone-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-stone-900 focus:border-transparent bg-white"
+            >
+              <!-- Populated by JS -->
+            </select>
+          </div>
+          <div>
+            <label for="to-year" class="block text-sm font-medium text-stone-700 mb-2">To Year</label>
+            <select
+              id="to-year"
+              class="w-full px-4 py-3 text-lg border border-stone-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-stone-900 focus:border-transparent bg-white"
+            >
+              <!-- Populated by JS -->
+            </select>
+          </div>
+        </div>
+
+        <!-- Swap Button -->
+        <div class="flex justify-center">
+          <button id="swap-years" class="text-stone-400 hover:text-stone-600 transition-colors p-2" title="Swap years">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M7 16V4M7 4L3 8M7 4L11 8M17 8V20M17 20L21 16M17 20L13 16"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Result -->
+    <section id="result" class="bg-white rounded-2xl shadow-sm p-4 sm:p-8 mb-6 sm:mb-8">
+      <div class="text-center">
+        <p class="text-sm sm:text-base text-stone-500 mb-2">
+          <span id="result-amount">$100</span> in <span id="result-from-year">1970</span> equals
+        </p>
+        <p id="result-value" class="text-4xl sm:text-5xl font-bold mb-3 sm:mb-4">$723.42</p>
+        <p class="text-sm sm:text-base text-stone-600">in <span id="result-to-year">2024</span> dollars</p>
+        <p id="result-change" class="text-xs sm:text-sm text-stone-500 mt-3 sm:mt-4">That's a 623.42% increase</p>
+      </div>
+    </section>
+
+    <!-- What Could You Buy -->
+    <section id="buying-power" class="bg-white rounded-2xl shadow-sm p-4 sm:p-8 mb-6 sm:mb-8">
+      <h2 class="text-lg font-semibold mb-4">What could you buy?</h2>
+      <div id="buying-power-list" class="space-y-3">
+        <!-- Populated by JS -->
+      </div>
+      <p class="text-center mt-6">
+        <a href="/" class="text-stone-500 hover:text-stone-700 underline text-sm">Explore all historical prices →</a>
+      </p>
+    </section>
+
+    <!-- Share -->
+    <section class="text-center mb-8">
+      <button id="share-btn" class="inline-flex items-center gap-2 px-6 py-3 border border-stone-200 rounded-full hover:bg-stone-50 transition-colors">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="18" cy="5" r="3"></circle>
+          <circle cx="6" cy="12" r="3"></circle>
+          <circle cx="18" cy="19" r="3"></circle>
+          <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+          <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+        </svg>
+        Share this calculation
+      </button>
+    </section>
+
+    <!-- Footer -->
+    <footer class="text-center text-xs sm:text-sm text-stone-400 mt-8 sm:mt-12">
+      <p class="mb-1">Data sourced from Bureau of Labor Statistics CPI-U</p>
+      <p class="mb-2">2025 data estimated from Jan-Nov averages</p>
+      <p><a href="/" class="hover:text-stone-600">← Back to PriceThen</a></p>
+    </footer>
+  </div>
+
+  <script type="module">
+    import { cpiData, adjustForInflation, calculatePercentChange, getYears } from '/js/cpi.js';
+
+    // Sample products for "what could you buy" section
+    const sampleProducts = [
+      { name: 'gallons of gas', price2024: 3.50, icon: '⛽' },
+      { name: 'dozen eggs', price2024: 4.50, icon: '🥚' },
+      { name: 'movie tickets', price2024: 11.75, icon: '🎬' },
+      { name: 'cups of coffee', price2024: 3.75, icon: '☕' },
+      { name: 'Big Macs', price2024: 6.50, icon: '🍔' }
+    ];
+
+    const amountInput = document.getElementById('amount');
+    const fromYearSelect = document.getElementById('from-year');
+    const toYearSelect = document.getElementById('to-year');
+    const swapBtn = document.getElementById('swap-years');
+    const shareBtn = document.getElementById('share-btn');
+
+    function init() {
+      const years = getYears();
+
+      // Populate year selects
+      years.forEach(year => {
+        fromYearSelect.add(new Option(year, year));
+        toYearSelect.add(new Option(year, year));
+      });
+
+      // Check URL params
+      const params = new URLSearchParams(window.location.search);
+      const urlAmount = params.get('amount');
+      const urlFrom = params.get('from');
+      const urlTo = params.get('to');
+
+      // Set defaults
+      fromYearSelect.value = urlFrom || '1970';
+      toYearSelect.value = urlTo || '2025';
+      if (urlAmount) amountInput.value = urlAmount;
+
+      // Event listeners
+      amountInput.addEventListener('input', calculate);
+      fromYearSelect.addEventListener('change', calculate);
+      toYearSelect.addEventListener('change', calculate);
+
+      swapBtn.addEventListener('click', () => {
+        const temp = fromYearSelect.value;
+        fromYearSelect.value = toYearSelect.value;
+        toYearSelect.value = temp;
+        calculate();
+      });
+
+      shareBtn.addEventListener('click', shareCalculation);
+
+      calculate();
+    }
+
+    function calculate() {
+      const amount = parseFloat(amountInput.value) || 0;
+      const fromYear = parseInt(fromYearSelect.value);
+      const toYear = parseInt(toYearSelect.value);
+
+      const adjustedValue = adjustForInflation(amount, fromYear, toYear);
+      const percentChange = calculatePercentChange(fromYear, toYear);
+
+      if (adjustedValue === null) return;
+
+      // Update result display
+      document.getElementById('result-amount').textContent = formatCurrency(amount);
+      document.getElementById('result-from-year').textContent = fromYear;
+      document.getElementById('result-value').textContent = formatCurrency(adjustedValue);
+      document.getElementById('result-to-year').textContent = toYear;
+
+      const changeText = percentChange >= 0
+        ? `That's a ${percentChange.toFixed(1)}% increase`
+        : `That's a ${Math.abs(percentChange).toFixed(1)}% decrease`;
+      document.getElementById('result-change').textContent = changeText;
+
+      // Update buying power section
+      updateBuyingPower(adjustedValue, toYear);
+
+      // Update URL without reload
+      const url = new URL(window.location);
+      url.searchParams.set('amount', amount);
+      url.searchParams.set('from', fromYear);
+      url.searchParams.set('to', toYear);
+      window.history.replaceState({}, '', url);
+    }
+
+    function updateBuyingPower(value, toYear) {
+      const list = document.getElementById('buying-power-list');
+      list.innerHTML = '';
+
+      // Only show for current year (we have current prices)
+      if (toYear !== 2025 && toYear !== 2024) {
+        list.innerHTML = '<p class="text-stone-500 text-sm">Buying power comparison available for 2024-2025</p>';
+        return;
+      }
+
+      sampleProducts.forEach(product => {
+        const count = Math.floor(value / product.price2024);
+        if (count > 0) {
+          const item = document.createElement('div');
+          item.className = 'flex items-center gap-3 text-stone-700';
+          item.innerHTML = `
+            <span class="text-2xl">${product.icon}</span>
+            <span><strong>${count.toLocaleString()}</strong> ${product.name}</span>
+          `;
+          list.appendChild(item);
+        }
+      });
+    }
+
+    function formatCurrency(value) {
+      if (value >= 1000000) {
+        return '$' + (value / 1000000).toFixed(2) + 'M';
+      } else if (value >= 1000) {
+        return '$' + value.toLocaleString('en-US', { maximumFractionDigits: 0 });
+      } else {
+        return '$' + value.toFixed(2);
+      }
+    }
+
+    async function shareCalculation() {
+      const amount = amountInput.value;
+      const fromYear = fromYearSelect.value;
+      const toYear = toYearSelect.value;
+      const adjustedValue = adjustForInflation(parseFloat(amount), parseInt(fromYear), parseInt(toYear));
+
+      const text = `$${amount} in ${fromYear} = ${formatCurrency(adjustedValue)} in ${toYear}`;
+      const url = window.location.href;
+
+      if (navigator.share) {
+        try {
+          await navigator.share({ title: 'Inflation Calculator', text, url });
+        } catch (err) {
+          // User cancelled
+        }
+      } else {
+        await navigator.clipboard.writeText(`${text}\n${url}`);
+        shareBtn.textContent = 'Copied!';
+        setTimeout(() => {
+          shareBtn.innerHTML = `
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="18" cy="5" r="3"></circle>
+              <circle cx="6" cy="12" r="3"></circle>
+              <circle cx="18" cy="19" r="3"></circle>
+              <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+              <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+            </svg>
+            Share this calculation
+          `;
+        }, 2000);
+      }
+    }
+
+    init();
+
+    // Clerk authentication
+    async function initClerk() {
+      try {
+        await waitForClerk();
+        updateAuthUI();
+      } catch (error) {
+        console.error('Clerk initialization error:', error);
+        document.getElementById('sign-in-btn').classList.remove('hidden');
+      }
+    }
+
+    function waitForClerk() {
+      return new Promise((resolve, reject) => {
+        if (window.Clerk && window.Clerk.loaded) {
+          resolve();
+          return;
+        }
+        if (window.Clerk) {
+          window.Clerk.load().then(resolve).catch(reject);
+          return;
+        }
+        const checkInterval = setInterval(() => {
+          if (window.Clerk) {
+            clearInterval(checkInterval);
+            window.Clerk.load().then(resolve).catch(reject);
+          }
+        }, 100);
+        setTimeout(() => {
+          clearInterval(checkInterval);
+          if (!window.Clerk?.loaded) reject(new Error('Clerk load timeout'));
+        }, 15000);
+      });
+    }
+
+    function updateAuthUI() {
+      const signInBtn = document.getElementById('sign-in-btn');
+      const userButton = document.getElementById('user-button');
+      if (window.Clerk.user) {
+        signInBtn.classList.add('hidden');
+        window.Clerk.mountUserButton(userButton);
+      } else {
+        signInBtn.classList.remove('hidden');
+        userButton.innerHTML = '';
+      }
+      window.Clerk.addListener(({ user }) => {
+        if (user) {
+          signInBtn.classList.add('hidden');
+          window.Clerk.mountUserButton(userButton);
+        } else {
+          signInBtn.classList.remove('hidden');
+          userButton.innerHTML = '';
+        }
+      });
+    }
+
+    document.getElementById('sign-in-btn').addEventListener('click', async () => {
+      try {
+        await waitForClerk();
+        window.Clerk.openSignIn({
+          afterSignInUrl: window.location.href,
+          afterSignUpUrl: window.location.href
+        });
+      } catch (error) {
+        console.error('Could not load Clerk:', error);
+      }
+    });
+
+    initClerk();
+  </script>
+</body>
+</html>
