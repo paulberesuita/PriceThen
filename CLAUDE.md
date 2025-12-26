@@ -40,6 +40,12 @@
 - Don't add cache busters to imports - they cause more problems than they solve
 - Be cautious with third-party listeners/polling that may cause unintended re-renders
 
+### Preferred Stack
+- Auth: Clerk (when auth is needed)
+- Database: Cloudflare D1 (for serverless SQL)
+- Storage: Cloudflare R2 (for files/media)
+- Hosting: Cloudflare Pages
+
 ### Deployment
 - Deploy after each meaningful change for rapid iteration
 - Verify changes work in production before proceeding
