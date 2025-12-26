@@ -16,7 +16,7 @@
 - [x] Add data sources/citations - each product has source links
 
 ### Engagement Features
-- [ ] Inflation calculator - "What would $X in [year] buy today?"
+- [x] Inflation calculator - "What would $X in [year] buy today?"
 - [ ] "Guess the price" game - show year, user guesses price
 - [ ] Time machine input - "Born in 1985, show prices from my lifetime"
 - [ ] Salary comparison - "Enter salary, see what it would be in [year]"
@@ -30,6 +30,18 @@
 ### Retention
 - [ ] Email alerts - "Eggs hit all-time high" (requires subscription)
 - [ ] Bookmark favorite products (requires sign-up)
+
+## SEO
+- [x] SEO-friendly URLs (/gas-prices-history instead of ?product=gas)
+- [x] Dynamic meta descriptions per product page
+- [x] Dynamic page titles per product
+- [x] Update Open Graph and Twitter meta tags dynamically
+- [x] Expand sitemap to all 45 products
+- [x] Premium products accessible with locked placeholder chart
+- [x] Add llms.txt for AI discoverability
+- [x] Submit sitemap to Google Search Console
+- [x] Add structured data (JSON-LD) per product page
+- [ ] Request indexing for key product pages in Search Console
 
 ## Marketing
 - [ ] Submit to Product Hunt (Tuesday-Thursday)

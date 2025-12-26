@@ -1,8 +1,8 @@
 // Main application entry point
-import { products, categories } from './data.js?v=20251223i';
-import { getState, setSelectedProduct, setIsPremium, setSelectedCategory, getSelectedCategory } from './state.js?v=20251223i';
-import { renderChart } from './chart.js?v=20251223i';
-import { setClerkInstance } from './api.js?v=20251223i';
+import { products, categories } from './data.js';
+import { getState, setSelectedProduct, setIsPremium, setSelectedCategory, getSelectedCategory } from './state.js';
+import { renderChart } from './chart.js';
+import { setClerkInstance } from './api.js';
 
 let clerk = null;
 let clerkLoading = false;
@@ -61,6 +61,55 @@ const slugToProduct = Object.fromEntries(
   Object.entries(productSlugs).map(([id, slug]) => [slug, id])
 );
 
+// SEO meta descriptions for each product
+const productMeta = {
+  eggs: { title: 'Egg Prices History (1950-2025)', description: 'See how egg prices changed from $0.60 in 1950 to over $3 today. Historical egg price data with inflation-adjusted values from BLS.' },
+  rent: { title: 'Rent Prices History (1950-2025)', description: 'Track 75 years of average rent prices in America. From $42/month in 1950 to over $1,700 today. Census and housing data.' },
+  gas: { title: 'Gas Prices History (1950-2025)', description: 'Gas price history from $0.18/gallon in 1950 to today. See how fuel costs changed over 75 years with BLS data.' },
+  minimum_wage: { title: 'Minimum Wage History (1950-2025)', description: 'Federal minimum wage history from $0.75/hour in 1950 to $7.25 today. See real purchasing power over time.' },
+  movie: { title: 'Movie Ticket Prices History (1950-2025)', description: 'Movie ticket price history from $0.46 in 1950 to over $11 today. 75 years of cinema admission costs.' },
+  tv: { title: 'TV Prices History (1950-2025)', description: 'Television price history showing how TVs went from $200+ in 1950 to affordable today despite inflation.' },
+  doctor: { title: 'Doctor Visit Cost History (1950-2025)', description: 'How much did a doctor visit cost? From $3 in 1950 to over $150 today. Medical care inflation data.' },
+  haircut: { title: 'Haircut Prices History (1950-2025)', description: 'Haircut price history from $0.75 in 1950 to $20+ today. See how grooming costs changed over 75 years.' },
+  tuition: { title: 'College Tuition History (1950-2025)', description: 'College tuition history from $300/year in 1950 to $10,000+ today. NCES education cost data.' },
+  milk: { title: 'Milk Prices History (1950-2025)', description: 'Milk price history from $0.83/gallon in 1950 to today. BLS dairy price data over 75 years.' },
+  bread: { title: 'Bread Prices History (1950-2025)', description: 'Bread price history from $0.14/loaf in 1950 to today. See how bakery costs changed over time.' },
+  coffee: { title: 'Coffee Prices History (1950-2025)', description: 'Coffee price history from $0.10/cup in 1950 to $3+ today. Track caffeine costs over 75 years.' },
+  bigmac: { title: 'Big Mac Prices History (1968-2025)', description: 'Big Mac price history from $0.49 in 1968 to over $5 today. The Economist Big Mac Index data.' },
+  home: { title: 'Home Prices History (1950-2025)', description: 'Median home price history from $7,400 in 1950 to $400,000+ today. FRED housing data.' },
+  electricity: { title: 'Electricity Prices History (1950-2025)', description: 'Monthly electricity bill history. See how energy costs changed over 75 years with EIA data.' },
+  heating: { title: 'Heating Cost History (1950-2025)', description: 'Home heating cost history. Track how winter utility bills changed over 75 years.' },
+  water: { title: 'Water Bill History (1950-2025)', description: 'Monthly water bill history. See how water utility costs changed over 75 years.' },
+  car: { title: 'Car Prices History (1950-2025)', description: 'New car price history from $1,500 in 1950 to $48,000+ today. BLS vehicle cost data.' },
+  airline: { title: 'Airline Ticket Prices History (1950-2025)', description: 'Domestic airline ticket price history. See how flying costs changed over 75 years.' },
+  bus: { title: 'Bus Fare History (1950-2025)', description: 'Bus fare history from $0.10 in 1950 to $2+ today. Public transit cost data.' },
+  bicycle: { title: 'Bicycle Prices History (1950-2025)', description: 'Bicycle price history. See how bike costs changed over 75 years of inflation.' },
+  median_income: { title: 'Median Income History (1950-2025)', description: 'Median household income from $3,300 in 1950 to $75,000+ today. Census income data.' },
+  teacher_salary: { title: 'Teacher Salary History (1950-2025)', description: 'Teacher salary history. See how educator pay changed over 75 years with NCES data.' },
+  engineer_salary: { title: 'Engineer Salary History (1950-2025)', description: 'Engineer salary history. Track engineering wages over 75 years with BLS data.' },
+  nurse_salary: { title: 'Nurse Salary History (1950-2025)', description: 'Nurse salary history. See how nursing wages changed over 75 years with BLS data.' },
+  concert: { title: 'Concert Ticket Prices History (1950-2025)', description: 'Concert ticket price history. See how live music costs changed over the decades.' },
+  sports: { title: 'Sports Ticket Prices History (1950-2025)', description: 'Sports event ticket price history. Track how game admission costs changed over time.' },
+  videogame: { title: 'Video Game Prices History (1980-2025)', description: 'Video game price history from $30 in 1980 to $70 today. Gaming cost trends.' },
+  newspaper: { title: 'Newspaper Prices History (1950-2025)', description: 'Newspaper price history from $0.05 in 1950 to $3+ today. Print media cost data.' },
+  computer: { title: 'Computer Prices History (1980-2025)', description: 'Desktop computer price history. See how PC costs dropped despite inflation.' },
+  internet: { title: 'Internet Prices History (1995-2025)', description: 'Monthly internet service price history from dial-up to fiber. Connectivity costs over time.' },
+  phone_service: { title: 'Phone Service Prices History (1950-2025)', description: 'Monthly phone service price history. Landline to mobile cost trends.' },
+  camera: { title: 'Camera Prices History (1950-2025)', description: 'Camera price history from film to digital. Photography equipment costs over time.' },
+  hospital: { title: 'Hospital Cost History (1950-2025)', description: 'Hospital day cost history. See how inpatient care costs exploded over 75 years.' },
+  health_insurance: { title: 'Health Insurance Cost History (1950-2025)', description: 'Annual health insurance cost history. Kaiser Family Foundation premium data.' },
+  dental: { title: 'Dental Visit Cost History (1950-2025)', description: 'Dental visit cost history. See how dentist prices changed over 75 years.' },
+  prescription: { title: 'Prescription Drug Prices History (1950-2025)', description: 'Average prescription drug price history. CMS pharmaceutical cost data.' },
+  drycleaning: { title: 'Dry Cleaning Prices History (1950-2025)', description: 'Dry cleaning price history for suits. See how laundry costs changed over time.' },
+  plumber: { title: 'Plumber Cost History (1950-2025)', description: 'Plumber hourly rate history. See how trade service costs changed over 75 years.' },
+  daycare: { title: 'Daycare Cost History (1970-2025)', description: 'Monthly daycare cost history. Track childcare expenses over the decades.' },
+  lawyer: { title: 'Lawyer Cost History (1950-2025)', description: 'Lawyer hourly rate history. See how legal fees changed over 75 years.' },
+  stamp: { title: 'Postage Stamp Prices History (1950-2025)', description: 'Postage stamp price history from $0.03 in 1950 to $0.68 today. USPS rate data.' },
+  wedding: { title: 'Wedding Cost History (1950-2025)', description: 'Average wedding cost history. From $2,000 in 1950 to $30,000+ today.' },
+  funeral: { title: 'Funeral Cost History (1950-2025)', description: 'Average funeral cost history. NFDA data on burial expenses over time.' },
+  textbook: { title: 'Textbook Prices History (1970-2025)', description: 'College textbook price history. See how academic book costs outpaced inflation.' }
+};
+
 function getProductIdFromUrl() {
   const path = window.location.pathname;
 
@@ -87,6 +136,104 @@ function updateUrl(productId, replace = false) {
       history.pushState({ productId }, '', newUrl);
     }
   }
+}
+
+function updateMetaTags(productId) {
+  const meta = productMeta[productId];
+  if (!meta) return;
+
+  // Update title
+  document.title = `${meta.title} | PriceThen`;
+
+  // Update meta description
+  const descriptionMeta = document.querySelector('meta[name="description"]');
+  if (descriptionMeta) {
+    descriptionMeta.setAttribute('content', meta.description);
+  }
+
+  // Update canonical URL
+  const canonical = document.querySelector('link[rel="canonical"]');
+  const slug = productSlugs[productId];
+  if (canonical && slug) {
+    canonical.setAttribute('href', `https://pricethen.com/${slug}`);
+  }
+
+  // Update Open Graph tags
+  const ogUrl = document.querySelector('meta[property="og:url"]');
+  const ogTitle = document.querySelector('meta[property="og:title"]');
+  const ogDescription = document.querySelector('meta[property="og:description"]');
+  if (ogUrl && slug) ogUrl.setAttribute('content', `https://pricethen.com/${slug}`);
+  if (ogTitle) ogTitle.setAttribute('content', meta.title);
+  if (ogDescription) ogDescription.setAttribute('content', meta.description);
+
+  // Update Twitter tags
+  const twitterTitle = document.querySelector('meta[name="twitter:title"]');
+  const twitterDescription = document.querySelector('meta[name="twitter:description"]');
+  if (twitterTitle) twitterTitle.setAttribute('content', meta.title);
+  if (twitterDescription) twitterDescription.setAttribute('content', meta.description);
+
+  // Update JSON-LD structured data
+  updateStructuredData(productId);
+}
+
+function updateStructuredData(productId) {
+  const meta = productMeta[productId];
+  const slug = productSlugs[productId];
+  if (!meta || !slug) return;
+
+  const allProducts = [...products.free, ...products.premium];
+  const product = allProducts.find(p => p.id === productId);
+  if (!product) return;
+
+  // Remove existing dynamic JSON-LD
+  const existingScript = document.getElementById('dynamic-jsonld');
+  if (existingScript) {
+    existingScript.remove();
+  }
+
+  // Create Dataset schema for the product
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Dataset",
+    "name": meta.title,
+    "description": meta.description,
+    "url": `https://pricethen.com/${slug}`,
+    "keywords": [
+      product.name,
+      "price history",
+      "inflation",
+      "historical prices",
+      "cost of living",
+      "1950 to 2025"
+    ],
+    "temporalCoverage": "1950/2025",
+    "spatialCoverage": "United States",
+    "creator": {
+      "@type": "Organization",
+      "name": "PriceThen",
+      "url": "https://pricethen.com"
+    },
+    "license": "https://pricethen.com",
+    "isAccessibleForFree": products.free.some(p => p.id === productId),
+    "variableMeasured": {
+      "@type": "PropertyValue",
+      "name": product.name,
+      "unitText": "USD"
+    }
+  };
+
+  // Add source if available
+  if (product.sources && product.sources.length > 0) {
+    jsonLd.citation = product.sources.map(s => s.url);
+  } else if (product.source) {
+    jsonLd.citation = product.source;
+  }
+
+  const script = document.createElement('script');
+  script.id = 'dynamic-jsonld';
+  script.type = 'application/ld+json';
+  script.textContent = JSON.stringify(jsonLd);
+  document.head.appendChild(script);
 }
 
 async function init() {
@@ -118,8 +265,9 @@ async function init() {
   updateActiveButton(initialProduct);
   await renderChart(initialProduct);
 
-  // Update URL to SEO-friendly format (replace, don't push)
+  // Update URL and meta tags to SEO-friendly format
   updateUrl(initialProduct, true);
+  updateMetaTags(initialProduct);
 
   setupEventListeners();
 
@@ -142,6 +290,7 @@ async function handlePopState(event) {
     setSelectedProduct(productId);
     updateActiveButton(productId);
     await renderChart(productId);
+    updateMetaTags(productId);
   }
 }
 
@@ -163,11 +312,17 @@ async function initClerk() {
     renderProductSelector();
 
     // Listen for Clerk user changes (sign in/out)
+    // Only re-render if user actually changes (sign in/out), not on polling
+    let lastUserId = clerk.user?.id || null;
     clerk.addListener(async ({ user }) => {
-      setClerkInstance(clerk);
-      updateAuthUI();
-      await checkPremiumStatus();
-      renderProductSelector();
+      const currentUserId = user?.id || null;
+      if (currentUserId !== lastUserId) {
+        lastUserId = currentUserId;
+        setClerkInstance(clerk);
+        updateAuthUI();
+        await checkPremiumStatus();
+        renderProductSelector();
+      }
     });
   } catch (error) {
     console.error('Clerk initialization error:', error);
@@ -322,20 +477,18 @@ function createProductButton(product, locked) {
   btn.dataset.productId = product.id;
   btn.textContent = product.icon + ' ' + product.name;
 
-  if (!locked) {
-    btn.addEventListener('click', () => selectProduct(product.id));
-  } else {
-    btn.addEventListener('click', showPremiumCTA);
-  }
+  // All products are clickable - locked ones show placeholder
+  btn.addEventListener('click', () => selectProduct(product.id, locked));
 
   return btn;
 }
 
-async function selectProduct(productId) {
+async function selectProduct(productId, locked = false) {
   setSelectedProduct(productId);
   updateActiveButton(productId);
   updateUrl(productId);
-  await renderChart(productId);
+  updateMetaTags(productId);
+  await renderChart(productId, locked);
 }
 
 function updateActiveButton(productId) {

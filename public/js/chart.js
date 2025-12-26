@@ -1,7 +1,7 @@
 // Chart rendering module
-import { getState, setChart } from './state.js?v=20251223h';
-import { getInterpolatedData, formatPrice, products } from './data.js?v=20251223h';
-import { fetchPriceData } from './api.js?v=20251223h';
+import { getState, setChart } from './state.js';
+import { getInterpolatedData, formatPrice, products } from './data.js';
+import { fetchPriceData } from './api.js';
 
 // Check if product is premium
 function isPremiumProduct(productId) {
@@ -34,7 +34,7 @@ function interpolateFromApi(prices) {
   return result;
 }
 
-export async function renderChart(productId) {
+export async function renderChart(productId, locked = false) {
   const ctx = document.getElementById('price-chart');
   const state = getState();
 
@@ -48,6 +48,13 @@ export async function renderChart(productId) {
 
   let data;
 
+  // If locked, show placeholder chart
+  if (locked) {
+    data = generatePlaceholderData();
+    renderLockedChart(ctx, product, data);
+    return;
+  }
+
   // Fetch from API for premium products, use local data for free
   if (isPremiumProduct(productId)) {
     try {
@@ -55,8 +62,9 @@ export async function renderChart(productId) {
       data = interpolateFromApi(response.prices);
     } catch (error) {
       if (error.status === 403) {
-        // Premium required - this shouldn't happen as buttons are locked
-        console.error('Premium access required');
+        // Premium required - show locked placeholder
+        data = generatePlaceholderData();
+        renderLockedChart(ctx, product, data);
         return;
       }
       console.error('Error fetching price data:', error);
@@ -163,6 +171,89 @@ export async function renderChart(productId) {
           ticks: {
             color: '#9ca3af',
             callback: (value) => formatPrice(value)
+          }
+        }
+      }
+    }
+  });
+
+  setChart(chart);
+}
+
+// Generate placeholder data for locked charts
+function generatePlaceholderData() {
+  const data = [];
+  for (let year = 1950; year <= 2025; year++) {
+    // Generate a realistic-looking upward trend with some variation
+    const base = 1 + (year - 1950) * 0.15;
+    const variation = Math.sin(year * 0.5) * 0.3;
+    data.push({ year, price: base + variation });
+  }
+  return data;
+}
+
+// Render a locked/blurred chart with upgrade CTA
+function renderLockedChart(ctx, product, data) {
+  // Update header
+  document.getElementById('product-title').textContent = product.icon + ' ' + product.name;
+  document.getElementById('subtitle-years').textContent = '1950 – 2025';
+
+  // Update source links
+  const sourceLink = document.getElementById('source-link');
+  if (product.source) {
+    sourceLink.innerHTML = ` · <a href="${product.source}" target="_blank" rel="noopener" class="inline-block px-2 py-0.5 text-xs bg-stone-100 hover:bg-stone-200 rounded-full text-stone-600 transition-colors">${product.sourceName}</a>`;
+  } else {
+    sourceLink.innerHTML = '';
+  }
+
+  // Hide comparison section for locked charts
+  const comparison = document.getElementById('comparison');
+  comparison.classList.add('hidden');
+
+  // Show premium CTA
+  const cta = document.getElementById('premium-cta');
+  cta.classList.remove('hidden');
+
+  // Create blurred placeholder chart
+  const chart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: data.map(d => d.year),
+      datasets: [{
+        label: product.name,
+        data: data.map(d => d.price),
+        borderColor: 'rgba(23, 23, 23, 0.2)',
+        backgroundColor: 'rgba(23, 23, 23, 0.03)',
+        fill: true,
+        tension: 0.3,
+        pointRadius: 0,
+        borderWidth: 2
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: {
+        intersect: false,
+        mode: 'index'
+      },
+      plugins: {
+        legend: { display: false },
+        tooltip: { enabled: false }
+      },
+      scales: {
+        x: {
+          grid: { display: false },
+          ticks: {
+            maxTicksLimit: 8,
+            color: '#d1d5db'
+          }
+        },
+        y: {
+          grid: { color: '#f3f4f6' },
+          ticks: {
+            color: '#d1d5db',
+            callback: () => '???'
           }
         }
       }
