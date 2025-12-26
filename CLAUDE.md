@@ -42,6 +42,7 @@
 
 ### Preferred Stack
 - Auth: Clerk (when auth is needed)
+- Payments: Stripe (when payments are needed)
 - Database: Cloudflare D1 (for serverless SQL)
 - Storage: Cloudflare R2 (for files/media)
 - Hosting: Cloudflare Pages
