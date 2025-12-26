@@ -40,6 +40,13 @@
 - Don't add cache busters to imports - they cause more problems than they solve
 - Be cautious with third-party listeners/polling that may cause unintended re-renders
 
+### Security (for Clerk + D1 stack)
+- Always verify user authentication in every API route - never trust client-side data
+- Always include `user_id` in WHERE clauses for user-specific data
+- Use parameterized queries (`.bind()`) - never string concatenation
+- Never accept user IDs from request body - extract from verified auth token
+- Webhooks must verify signatures before processing (Stripe, Clerk, etc.)
+
 ### Preferred Stack
 - Auth: Clerk (when auth is needed)
 - Payments: Stripe (when payments are needed)
