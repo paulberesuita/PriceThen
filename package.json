@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "wrangler pages dev . --d1=DB",
-    "deploy": "wrangler pages deploy .",
+    "deploy": "wrangler pages deploy public --project-name=pricethen",
     "db:create": "wrangler d1 create pricethen-db",
     "db:migrate": "wrangler d1 execute pricethen-db --file=./schema.sql"
   },
