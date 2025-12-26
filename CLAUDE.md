@@ -14,6 +14,9 @@
 - Animations should be gentle (pulse, fade) rather than aggressive (spin, bounce)
 - Avoid verbose status text - let visual indicators speak for themselves
 - Ensure proper spacing between UI elements
+- Locked/premium states should still be navigable - show placeholder content, not dead ends
+- Show meaningful placeholders, not just spinners or blank states
+- Prefer earthy/warm grays over cool/blueish grays (e.g., Tailwind's stone palette)
 
 ### Debugging
 - When debugging, ask clarifying questions rather than guessing
