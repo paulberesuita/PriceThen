@@ -15,25 +15,27 @@
 - Avoid verbose status text - let visual indicators speak for themselves
 - Ensure proper spacing between UI elements
 
-### Design Aesthetic
-- Neutral color palette with off-white backgrounds (#f5f5f0)
-- Dark text (#171717) for high contrast readability
-- Rounded corners on cards and buttons (rounded-full, rounded-2xl)
-- Soft shadows for depth without harshness
-- White cards/containers that feel lightweight
+### Debugging
+- When debugging, ask clarifying questions rather than guessing
+- Use browser DevTools (Network tab, Console) to identify root causes
+- Look for patterns (repeated API calls, re-renders) not just errors
 
-### Code Style
-- Vanilla JavaScript with ES6 modules preferred
-- Centralized state management with setter functions
-- Modular file organization - separate concerns into dedicated files
-- Tailwind CSS for utility styling
-- Custom CSS for animations and complex component styles
+### SEO (for web projects)
+- Use SEO-friendly URLs (not query params)
+- Dynamic meta tags (title, description, Open Graph) for SPAs
+- Sitemap with all indexable pages
+- JSON-LD structured data where relevant
+- Consider llms.txt for AI discoverability
 
-### Architecture
-- Cloudflare Pages for hosting
-- Cloudflare D1 for database
-- Cloudflare R2 for media storage
-- API routes in `functions/api/` directory
+### Git Workflow
+- Commit after completing a feature, not after every tiny change
+- Use descriptive commit messages summarizing the "why"
+- Push when explicitly asked or when a logical milestone is reached
+
+### Code Hygiene
+- Keep the codebase clean - remove unused files, old schemas, seeds
+- Don't add cache busters to imports - they cause more problems than they solve
+- Be cautious with third-party listeners/polling that may cause unintended re-renders
 
 ### Deployment
 - Deploy after each meaningful change for rapid iteration
